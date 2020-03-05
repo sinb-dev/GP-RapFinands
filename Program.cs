@@ -15,7 +15,7 @@ namespace Rap_Finands
         public static string reginummer = "4242";
         public static string datafil = "bank.json"; //Her ligger alt data i
         public static List<Konto> konti;
-        
+        public static float belob;
         static void Main(string[] args)
         {
             Console.WriteLine("Henter alt kontodata");
@@ -49,8 +49,9 @@ namespace Rap_Finands
 
                 Console.Write(">");
                 string valg1 = Console.ReadLine();
-                int valg = int.Parse(s: valg1);
-
+                int valg = int.Parse(valg1);
+                valg = valg + 1;
+                
                 switch (valg) {
                     case 1:
                         dos_opretKonto();
@@ -146,13 +147,13 @@ namespace Rap_Finands
             Console.WriteLine("================\n");
 
         }
-        //!!! Stærk binding (kohærens). Indkapsling: Metoden burde ligge på Konto. Første parameter burde fjernes
+        
         public static bool GemTrans(Konto konto, string tekst, float beløb) {
             var saldo = findSaldo(konto);
             if (saldo + beløb < 0) return false;
             var t = new Transaktion();
             t.tekst = tekst;
-            t.amount = beløb;
+            t.amount = belob;
             t.saldo = t.amount + saldo;
             t.dato = DateTime.Now;
             
@@ -173,9 +174,11 @@ namespace Rap_Finands
         public static void gem() 
         {
             File.WriteAllText(datafil,JsonConvert.SerializeObject(konti));
+            File.Delete(datafil); //Fjern debug fil
         }
         public static void hent()
         {
+            datafil = "debug_bank.json"; //Debug - brug en anden datafil til debug ~Konrad
             if (File.Exists(datafil)) {
                 string json = File.ReadAllText(datafil);
                 konti = JsonConvert.DeserializeObject<List<Konto>>(json);
@@ -185,3 +188,8 @@ namespace Rap_Finands
         }
     }
 }
+/** 
+Koden er lavet til undervisningbrug på TECHCOLLEGE
+Voldum Bank og nævnte personer er fiktive.
+~Simon Hoxer Bønding
+**/
